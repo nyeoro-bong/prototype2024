@@ -1,0 +1,19 @@
+h4{
+  color: greenyellow;
+  font-weight: bold;
+}
+.normal{
+  color:gold;
+  font-weight: bold;
+}
+.alert{
+  color:red;
+  font-weight: bold;
+}
+body{
+  background-color: #04a6eb;
+  color: #fdffff;
+  width: 600px;
+  margin-right: auto;
+  margin-left: auto;
+}

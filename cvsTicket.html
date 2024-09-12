@@ -11,23 +11,23 @@
   <header>
     <nav class="navbar bg-dark" data-bs-theme="dark">
       <div class="container-fluid"> 
-        <a class="navbar-brand" href="#">コンビニ無料チケット 引換期間まるわかりアプリ</a>
+        <a class="navbar-brand" href="#">今日使えるコンビニ引換チケットは？</a>
       </div>
     </nav>
   </header>
   <div class="container pt-6">
-    <h5>引換開始日、終了日、コンビニ、商品名を<br>入力して決定するボタンを押して下さい👍</h5>
+    <h5>引換開始日、終了日、コンビニ、商品名を入力して決定するボタンを押して下さい👍</h5>
     !引換可能なチケットリストは以下の通りです!
     <div id="result" class="normal"></div>
     <input type="date" name="date" id="validDate">引換開始日</input><br>
     <input type="date" name="date" id="expireDate">引換終了日</input><br>
-    <select class="from-select" id="cvs" required aria-label="select-example" style="width: 30%;">
+    <select class="from-select" id="cvs" required aria-label="select-example" style="width: 35%;">
       <option value="セブンイレブン">セブンイレブン</option>
       <option value="ローソン">ローソン</option>
       <option value="ファミリーマート">ファミリーマート</option>
       <option value="その他CVS">その他</option>
     </select>CVSﾁｴｰﾝ<br>
-    <input type="text" name="商品名" id="goodsName" size="40" maxlength="40">引換商品<br>
+    <input type="text" name="商品名" id="goodsName" size="30" maxlength="30">引換商品<br>
     <button id="submit">決定する</button>
     <div id="info"></div>
   </div>

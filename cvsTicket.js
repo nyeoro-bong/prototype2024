@@ -44,6 +44,10 @@ submit.addEventListener(
       cvsData.push(cvs);
       goodsData.push(goods);
       n = n+1;
+      validDate.value = ""
+      expireDate.value = ""
+      cvsName.value = ""
+      goodsName.value = ""
       infoMsg.innerText = "👍引換クーポン情報が登録されました👍"
       infoArea.appendChild(infoMsg);
       printVdty();

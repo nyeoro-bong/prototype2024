@@ -79,7 +79,9 @@ function printVdty(){
   for(let i = 0; i <=n; i++) {
     if(validData[i] <= nowDate && nowDate <= expireData[i]) {
       paragraph.innerText = `★${cvsData[i]}》${goodsData[i]} !期限:${expireData[i]}`;
-      if(expireData[i] - nowDate < 4) {
+      let expireTexts = expireData[i].split("-");
+      let nowTexts = nowDate.split("-");
+      if(expireTexts[2] - nowTexts[2] <= 3) {
         resultArea.setAttribute('class', 'alert');
       }
       resultArea.appendChild(paragraph);

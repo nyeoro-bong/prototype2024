@@ -5,6 +5,7 @@ let cvsName = document.getElementById(`cvs`);
 let goodsName = document.getElementById(`goodsName`);
 let submit = document.getElementById(`submit`);
 let infoArea = document.getElementById(`info`);
+let closeArea = document.getElementById(`closeResult`);
 let resultArea = document.getElementById(`result`);
 let validData = ["2024-09-01"];
 let expireData = ["2024-09-30"];
@@ -81,10 +82,11 @@ function printVdty(){
       paragraph.innerText = `★${cvsData[i]}》${goodsData[i]} !期限:${expireData[i]}`;
       let expireTexts = expireData[i].split("-");
       let nowTexts = nowDate.split("-");
-      if(expireTexts[2] - nowTexts[2] <= 3) {
-        resultArea.setAttribute('class', 'alert');
+      if( expireTexts[2] - nowTexts[2] <= 3 ) {
+        closeArea.appendChild(paragraph);
+      } else {
+        resultArea.appendChild(paragraph);
       }
-      resultArea.appendChild(paragraph);
     } else {
       paragraph.innerText = ""
     }

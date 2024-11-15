@@ -8,9 +8,10 @@ let infoArea = document.getElementById(`info`);
 let closeArea = document.getElementById(`closeResult`);
 let resultArea = document.getElementById(`result`);
 let validData = ["2024-09-01"];
-let expireData = ["2024-09-30"];
+let expireData = ["2024-11-30"];
 let cvsData = ["その他CVS"];
 let goodsData = ["マツキヨ10%割引クーポン券"];
+let expireTexts = [];
 let n = 0; //データカウンタ
 
 submit.addEventListener(
@@ -44,6 +45,16 @@ submit.addEventListener(
       expireData.push(expire);
       cvsData.push(cvs);
       goodsData.push(goods);
+      
+      const serializedValidData = JSON.stringify(validData);
+      localStorage.setItem("lsValidData", serializedValidData);
+      const serializedExpireData = JSON.stringify(expireData);
+      localStorage.setItem("lsExpireData", serializedExpireData);
+      const serializedCvsData = JSON.stringify(cvsData);
+      localStorage.setItem("lsCvsData", serializedCvsData);
+      const serializedGoodsData = JSON.stringify(goodsData);
+      localStorage.setItem("lsGoodsData", serializedGoodsData);
+
       n = n+1;
       validDate.value = ""
       expireDate.value = ""
@@ -66,23 +77,36 @@ function rotateInfo() {
 }
 setInterval(rotateInfo, 30);
 
-const formatDate = (date = new Date()) => {
-  const yyyy = date.getFullYear();
-  const mm = String(date.getMonth() + 1).padStart(2, "0"); // 月は0から始まるため、1を足す
-  const dd = String(date.getDate()).padStart(2, "0");
-  return `${yyyy}-${mm}-${dd}`;
-};
+let date = new Date();
+let MM = parseInt(date.getMonth() + 1);
+let DD = parseInt(date.getDate());
+let YYMMDD = date.toISOString().split("T");
+nowDate = YYMMDD[0];
 
 function printVdty(){
-  nowDate = formatDate();
   let paragraph = document.createElement("p");
   paragraph.innerText = "";
+
+  const serializedValidData = localStorage.getItem("lsValidData");
+  validData = JSON.parse(serializedValidData);
+  const serializedExpireData = localStorage.getItem("lsExpireData");
+  expireData = JSON.parse(serializedExpireData);
+  const serializedCvsData = localStorage.getItem("lsCvsData");
+  cvsData = JSON.parse(serializedCvsData);
+  const serializedGoodsData = localStorage.getItem("lsGoodsData");
+  goodsData = JSON.parse(serializedGoodsData);
+
   for(let i = 0; i <=n; i++) {
     if(validData[i] <= nowDate && nowDate <= expireData[i]) {
       paragraph.innerText = `★${cvsData[i]}》${goodsData[i]} !期限:${expireData[i]}`;
-      let expireTexts = expireData[i].split("-");
-      let nowTexts = nowDate.split("-");
-      if( expireTexts[2] - nowTexts[2] <= 3 ) {
+      expireTexts = expireData[i].split("-");
+      if(expireTexts[1] - MM >= 1){        //月またぎ処理
+        if(expireTexts[2] + 30 - DD <= 3){  //月初Dateレコードに+30して差を取り直前レコード判定
+          closeArea.appendChild(paragraph);
+        } else {
+          resultArea.appendChild(paragraph);
+        }
+      }else if( expireTexts[2] - DD <= 3 ) {
         closeArea.appendChild(paragraph);
       } else {
         resultArea.appendChild(paragraph);

@@ -11,7 +11,12 @@ let validData = ["2024-09-01"];
 let expireData = ["2024-11-30"];
 let cvsData = ["その他CVS"];
 let goodsData = ["マツキヨ10%割引クーポン券"];
+let SZvalidData = null;
+let SZexireData = null;
+let SZcvsData = null;
+let SZgoodsData = null;
 let expireTexts = [];
+let nowTexts = [];
 let n = 0; //データカウンタ
 
 submit.addEventListener(
@@ -45,22 +50,20 @@ submit.addEventListener(
       expireData.push(expire);
       cvsData.push(cvs);
       goodsData.push(goods);
-      
-      const serializedValidData = JSON.stringify(validData);
-      localStorage.setItem("lsValidData", serializedValidData);
-      const serializedExpireData = JSON.stringify(expireData);
-      localStorage.setItem("lsExpireData", serializedExpireData);
-      const serializedCvsData = JSON.stringify(cvsData);
-      localStorage.setItem("lsCvsData", serializedCvsData);
-      const serializedGoodsData = JSON.stringify(goodsData);
-      localStorage.setItem("lsGoodsData", serializedGoodsData);
-
       n = n+1;
       validDate.value = ""
       expireDate.value = ""
       goodsName.value = ""
       infoMsg.innerText = "👍引換クーポン情報が登録されました👍"
       infoArea.appendChild(infoMsg);
+      SZvalidData = JSON.stringify(validData);
+      localStorage.setItem("LSvaliData",SZvalidData);
+      SZexireData = JSON.stringify(expireData);
+      localStorage.setItem("LSexpireData",SZexireData);
+      SZcvsData = JSON.stringify(cvsData);
+      localStorage.setItem("LScvsData",SZcvsData);
+      SZgoodsData = JSON.stringify(goodsData);
+      localStorage.setItem("LSgoodsData",SZgoodsData);
       printVdty();
     }
     console.log(valid);
@@ -77,36 +80,43 @@ function rotateInfo() {
 }
 setInterval(rotateInfo, 30);
 
-let date = new Date();
-let MM = parseInt(date.getMonth() + 1);
-let DD = parseInt(date.getDate());
-let YYMMDD = date.toISOString().split("T");
-nowDate = YYMMDD[0];
+/**
+ * dateオブジェクトを渡すと　yyyy-mm-dd　形式の日付を返す関数formatDate
+ * @param {object} date         !new Date()で作成したdateオブジェクト
+ * @return {string} yyyy-mm-dd  !yyyy-mm-dd形式に整形された文字列
+ */
+
+const formatDate = (date = new Date()) => {
+  const yyyy = date.getFullYear();
+  const mm = String(date.getMonth() + 1).padStart(2, "0"); // 月は0から始まるため、1を足す
+  const dd = String(date.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
+};
 
 function printVdty(){
+  nowDate = formatDate();
   let paragraph = document.createElement("p");
   paragraph.innerText = "";
-
-  const serializedValidData = localStorage.getItem("lsValidData");
-  validData = JSON.parse(serializedValidData);
-  const serializedExpireData = localStorage.getItem("lsExpireData");
-  expireData = JSON.parse(serializedExpireData);
-  const serializedCvsData = localStorage.getItem("lsCvsData");
-  cvsData = JSON.parse(serializedCvsData);
-  const serializedGoodsData = localStorage.getItem("lsGoodsData");
-  goodsData = JSON.parse(serializedGoodsData);
-
+  SZvalidData = localStorage.getItem("LSvalidData");
+  validData = JSON.parse(SZvalidData);
+  SZexireData = localStorage.getItem("LSexpireData");
+  expireData = JSON.parse(SZexireData);
+  SZcvsData = localStorage.getItem("LScvsData");
+  cvsData = JSON.parse(SZcvsData);
+  SZgoodsData = localStorage.getItem("LSgoodsData");
+  goodsData = JSON.parse(SZgoodsData);
   for(let i = 0; i <=n; i++) {
     if(validData[i] <= nowDate && nowDate <= expireData[i]) {
       paragraph.innerText = `★${cvsData[i]}》${goodsData[i]} !期限:${expireData[i]}`;
       expireTexts = expireData[i].split("-");
-      if(expireTexts[1] - MM >= 1){        //月またぎ処理
-        if(expireTexts[2] + 30 - DD <= 3){  //月初Dateレコードに+30して差を取り直前レコード判定
-          closeArea.appendChild(paragraph);
+      nowTexts = nowDate.split("-");
+      if(parseInt(expireTexts[1]) - parseInt(nowTexts[1]) > 0){         //月またぎ処理 parseInt() で明示的に整数変換
+        if(parseInt(expireTexts[2]) +30 - parseInt(nowTexts[2]) <= 3){  //月初Dateレコードに+30して差を取り直前レコード判定
+          closeArea.appendChild(paragraph);                             //期限3日以内のレコードを closeArea に掲示
         } else {
           resultArea.appendChild(paragraph);
         }
-      }else if( expireTexts[2] - DD <= 3 ) {
+      }else if( parseInt(expireTexts[2]) - parseInt(nowTexts[2]) <= 3 ) {
         closeArea.appendChild(paragraph);
       } else {
         resultArea.appendChild(paragraph);
